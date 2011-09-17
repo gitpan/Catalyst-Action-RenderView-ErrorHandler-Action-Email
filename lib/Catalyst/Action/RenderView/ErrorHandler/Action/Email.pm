@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Moose;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 with 'Catalyst::Action::RenderView::ErrorHandler::Action';
 
@@ -36,56 +36,55 @@ Catalyst::Action::RenderView::ErrorHandler::Action::Email - Catalyst ErrorHandle
 
 	#In a configuration somewhere:
 	error_handler => {
-        'actions' => [
-				{
-					type => 'Log',
-              		id => 'log-server',
-              		level => 'error'
-				},
-				{
-					#Use this action
-					type => 'Email',
-              		id => 'log-email',
-					#This should be a Catalyst::View::Email::Template or Catalyst::View::Email view.
-					view => 'ErrorMail',
-					#This options are copied into $c->stash->{email} for accesing from the view selected above
-					#For additional information look into the documentation of Catalyst::View::Email::Template
-              		options => {
-						(
-							#becomes $c->stash->{email}->{from} = ...
-							from => 'MyApp - Homepage <homepage@domain.com>',
-							to => 'you@domain.com',
-							subject => 'Homepage - ErrorMail',
-							#Template isn't needed, if you use the simple Catalyst::View::Email
-							templates => [
-								{
-									template        => 'ErrorMail.tt2',
-									content_type    => 'text/html',
-									charset         => 'utf-8',
-									encoding        => 'quoted-printable',
-									#View to render the Template
-									view            => 'HTMLEmail', 
-								},
-							]
-						)
-					}
-				}
+	        'actions' => [
+			{
+				type => 'Log',
+				id => 'log-server',
+				level => 'error'
+			},
+			{
+				#Use this action
+				type => 'Email',
+	              		id => 'log-email',
+				#This should be a Catalyst::View::Email::Template or Catalyst::View::Email view.
+				view => 'ErrorMail',
+				#This options are copied into $c->stash->{email} for accesing from the view selected above
+				#For additional information look into the documentation of Catalyst::View::Email::Template
+	              		options => {
+				(
+					#becomes $c->stash->{email}->{from} = ...
+					from => 'MyApp - Homepage <homepage@domain.com>',
+					to => 'you@domain.com',
+					subject => 'Homepage - ErrorMail',
+					#Template isn't needed, if you use the simple Catalyst::View::Email
+					templates => [
+						{
+							template        => 'ErrorMail.tt2',
+							content_type    => 'text/html',
+							charset         => 'utf-8',
+							encoding        => 'quoted-printable',
+							#View to render the Template
+							view            => 'HTMLEmail', 
+						},
+					]
+				)}
+			}
 		],
-        'handlers' => {
-			(
-            '5xx' => {
-                template => 'error_internal.tt2',
-                actions => ['log-server','log-email']
+		'handlers' => {
+		(
+	        	'5xx' => {
+				template => 'error_internal.tt2',
+				actions => ['log-server','log-email']
 			},
-            '404' => {
-                template => 'error.tt2'
+			'404' => {
+				template => 'error.tt2'
 			},
-            'fallback' =>  {
-                static => 'root/src/error.html', 
-                actions => ['log-email','log-email']
-			}) 
-		}
-	}, 
+			'fallback' =>  {
+	                	static => 'root/src/error.html', 
+	                	actions => ['log-email','log-email']
+			}
+		)}
+	} 
 	
 	#The template may look like:
 	[% USE Dumper %]
@@ -102,7 +101,7 @@ Catalyst::Action::RenderView::ErrorHandler::Action::Email - Catalyst ErrorHandle
 	
 	<h4>Arguments:</h4>
 	[% FOREACH a IN c.request.args %]
-	   <p>[% a | html %]</p>
+		<p>[% a | html %]</p>
 	[% END %]
 	
 	<h4>Parameters:</h4>
@@ -113,7 +112,7 @@ Catalyst::Action::RenderView::ErrorHandler::Action::Email - Catalyst ErrorHandle
 	
 	<h4>Error messages:</h4>
 	[% FOREACH e IN c.error %]
-	   <p>[% e | html %]</p>
+		<p>[% e | html %]</p>
 	[% END %]
 	
 	
